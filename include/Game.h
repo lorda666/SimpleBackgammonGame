@@ -37,8 +37,6 @@ class Game : public GLBase
         GLuint      m_RollDiceBtnVB;
         GLuint      m_CheckerVAO;
         GLuint      m_CheckerVB;
-        GLuint      m_FieldContourVAO;
-        GLuint      m_FieldContourVB;
         GLuint      m_CheckerHighlightVAO;
         GLuint      m_CheckerHighlightVB;
         GLuint      m_CheckerInStackVAO;

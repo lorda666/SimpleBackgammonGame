@@ -1,5 +1,4 @@
 #include "Game.h"
-//#include "Util.h"
 #include <cstdlib>
 #include <ctime>
 
@@ -153,34 +152,7 @@ void Game::BuildBuffers(void)
     glBindVertexArray(0);
     // << ROLL DICE BUTTON VAO
 
-    // FIELD CONTOUR VAO >>
-    glGenVertexArrays(1, &this->m_FieldContourVAO);
-    glBindVertexArray(this->m_FieldContourVAO);
-
-    ColorVertex fieldContourVertices[] =
-    {
-        { glm::vec3(-32.0f, -180.0f, 1.0f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f) },
-        { glm::vec3(32.0f, -180.0f, 1.0f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f) },
-        { glm::vec3(32.0f, 180.0f, 1.0f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f) },
-        { glm::vec3(-32.0f, 180.0f, 1.0f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f) },
-    };
-
-    glGenBuffers(1, &this->m_FieldContourVB);
-    glBindBuffer(GL_ARRAY_BUFFER, this->m_FieldContourVB);
-    glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(ColorVertex), fieldContourVertices, GL_STATIC_DRAW);
-
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(ColorVertex),
-                          reinterpret_cast<void*>(offsetof(ColorVertex, position)));
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(ColorVertex),
-                          reinterpret_cast<void*>(offsetof(ColorVertex, color)));
-
-    glBindVertexArray(0);
-    // << FIELD CONTOUR VAO
-
-    // CHECKER CONTOUR VAO >>
+    // CHECKER HIGHLIGHT VAO >>
     glGenVertexArrays(1, &this->m_CheckerHighlightVAO);
     glBindVertexArray(this->m_CheckerHighlightVAO);
 
@@ -214,7 +186,7 @@ void Game::BuildBuffers(void)
                           reinterpret_cast<void*>(offsetof(ColorVertex, color)));
 
     glBindVertexArray(0);
-    // << CHECKER CONTOUR VAO
+    // << CHECKER HIGHLIGHT VAO
 
     // CHECKER IN STACK VAO >>
     glGenVertexArrays(1, &this->m_CheckerInStackVAO);
@@ -1740,22 +1712,9 @@ void Game::Render(void)
 
     DrawDice();
 
-    // DRAW FIELD CONTOUR >>
+    // DRAW CHECKER HIGHLIGHT >>
     glUseProgram(this->m_ColorSP);
 
-    glBindVertexArray(this->m_FieldContourVAO);
-
-    this->m_mtxWorld = this->m_FieldContour.GetModelMatrix();
-    this->m_mtxWorldViewProj = this->m_mtxViewProj * this->m_mtxWorld;
-
-    glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(this->m_mtxWorldViewProj));
-
-    glDrawArrays(GL_LINE_LOOP, 0, 4);
-
-    glBindVertexArray(0);
-    // << DRAW FIELD CONTOUR
-
-    // DRAW CHECKER HIGHLIGHT >>
     glBindVertexArray(this->m_CheckerHighlightVAO);
 
     this->m_mtxWorld = this->m_CheckerHighlight.GetModelMatrix();
@@ -1920,7 +1879,6 @@ void Game::ReleaseObjects(void)
     glDeleteBuffers(1, &this->m_CheckerVB);
     glDeleteBuffers(1, &this->m_DieVB);
     glDeleteBuffers(1, &this->m_RollDiceBtnVB);
-    glDeleteBuffers(1, &this->m_FieldContourVB);
     glDeleteBuffers(1, &this->m_CheckerHighlightVB);
     glDeleteBuffers(1, &this->m_CheckerInStackVB);
 
@@ -1931,7 +1889,6 @@ void Game::ReleaseObjects(void)
     glDeleteVertexArrays(1, &this->m_DieVAO);
     glDeleteVertexArrays(1, &this->m_CheckerVAO);
     glDeleteVertexArrays(1, &this->m_RollDiceBtnVAO);
-    glDeleteVertexArrays(1, &this->m_FieldContourVAO);
     glDeleteVertexArrays(1, &this->m_CheckerHighlightVAO);
     glDeleteVertexArrays(1, &this->m_CheckerInStackVAO);
 
